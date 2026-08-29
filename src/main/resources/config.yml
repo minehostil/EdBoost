@@ -1,0 +1,29 @@
+# ══════════════════════════════════════════════
+#  EdBoost - Configuración principal
+# ══════════════════════════════════════════════
+
+# Si es 'true', /edboost add|remove|reset solo aceptará economías
+# listadas abajo en 'economies'. Si es 'false', se acepta cualquier
+# nombre de economía escrita en el comando (sin límite máximo aplicado,
+# ya que no habría una entrada de configuración de la que leerlo).
+strict-economies: true
+
+# Economías disponibles para boostear. La clave (ej. 'money') es el ID
+# que se usa en /edboost add <jugador> <ID> <cantidad> y debe coincidir
+# exactamente con el nombre de la economía tal como lo reporta EdTools
+# en EdToolsCurrencyAddEvent#getCurrency().
+economies:
+  money:
+    # Nombre mostrado en /edboost list y en mensajes.
+    display-name: "Dinero"
+    # Multiplicador máximo acumulable para esta economía (0.01 = 1%).
+    # /edboost add rechazará cualquier suma que supere este tope.
+    max-boost: 1.0
+
+  tokens:
+    display-name: "Tokens"
+    max-boost: 0.5
+
+  gems:
+    display-name: "Gemas"
+    max-boost: 0.3
