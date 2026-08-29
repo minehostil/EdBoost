@@ -1,0 +1,38 @@
+# ══════════════════════════════════════════════
+#  EdBoost - Mensajes
+# ══════════════════════════════════════════════
+# Placeholders disponibles según el mensaje: %player%, %economy%,
+# %amount%, %total%, %max%. Colores: '&' legacy y '&#rrggbb' hex.
+
+prefix: "7ff55[EdBoost]&r "
+
+no-permission-use: "&#ff5555No tienes permiso para usar este comando."
+no-permission-admin: "&#ff5555No tienes permiso para hacer eso."
+
+usage-header: "&#ffaa00Uso:"
+usage-add: "&#aaaaaa/edboost add <jugador> <economia> <cantidad>"
+usage-remove: "&#aaaaaa/edboost remove <jugador> <economia> <cantidad>"
+usage-reset: "&#aaaaaa/edboost reset <jugador> <economia|all>"
+usage-list: "&#aaaaaa/edboost list [jugador]"
+
+usage-add-only: "&#ffaa00Uso: /edboost add <jugador> <economia> <cantidad>"
+usage-remove-only: "&#ffaa00Uso: /edboost remove <jugador> <economia> <cantidad>"
+usage-reset-only: "&#ffaa00Uso: /edboost reset <jugador> <economia|all>"
+usage-list-only: "&#ffaa00Uso: /edboost list <jugador>"
+
+player-not-found: "&#ff5555Ese jugador no existe o nunca entró al servidor."
+invalid-amount: "&#ff5555La cantidad debe ser un número válido, ej: 0.01"
+unknown-economy: "&#ff5555La economía '%economy%' no existe. Revisa config.yml."
+
+boost-max-exceeded: "&#ff5555Ese boost superaría el máximo permitido para %economy% (&#ffffff%max%x&#ff5555). Total actual: &#ffffff%total%x"
+
+boost-added: "7ff55Se añadió &#ffffff%amount%x7ff55 al boost de &#ffffff%economy%7ff55 de &#ffffff%player%7ff55. Nuevo total: &#ffffff%total%x"
+boost-removed: "7ff55Se quitó &#ffffff%amount%x7ff55 del boost de &#ffffff%economy%7ff55 de &#ffffff%player%7ff55. Nuevo total: &#ffffff%total%x"
+
+reset-all: "7ff55Se reiniciaron &#fffffftodos7ff55 los boosts de &#ffffff%player%7ff55."
+reset-one: "7ff55Se reinició el boost de &#ffffff%economy%7ff55 de &#ffffff%player%7ff55."
+
+list-header: "7ff55Boosts permanentes de &#ffffff%player%7ff55:"
+list-entry: "&#aaaaaa - &#ffffff%economy%&#aaaaaa: &#ffffff%amount%x"
+list-total: "7ff55Total acumulado: &#ffffff%total%x"
+list-empty: "&#ffaa00%player% no tiene boosts permanentes activos."
