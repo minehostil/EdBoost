@@ -1,0 +1,22 @@
+name: EdBoost
+version: '1.0.0'
+main: com.minehostil.edboost.EdBoost
+api-version: '1.21'
+author: MineHostil
+depend: [EdTools]
+softdepend: [PlaceholderAPI]
+
+commands:
+  edboost:
+    description: Gestiona boosts permanentes de EdTools por jugador
+    usage: /<command> <add|remove|reset|list> ...
+    permission: edboost.use
+    permission-message: "&#ff5555No tienes permiso para usar este comando."
+
+permissions:
+  edboost.use:
+    description: Permite usar el comando base /edboost
+    default: op
+  edboost.admin:
+    description: Permite añadir, quitar y reiniciar boosts de otros jugadores
+    default: op
