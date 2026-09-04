@@ -10,10 +10,15 @@ import java.util.Locale;
 /**
  * Placeholders expuestos (ver PLACEHOLDERS.md para la lista completa):
  *
- * %edboost_<economia>%           -> valor del boost del jugador en esa economía
- * %edboost_<economia>_max%       -> máximo configurado para esa economía
+ * %edboost_<economia>%           -> multiplicador total del jugador en esa economía (ej: 1.10)
+ * %edboost_<economia>_percent%   -> el mismo valor como porcentaje (ej: +10.0)
+ * %edboost_<economia>_max%       -> máximo configurado (multiplicador) para esa economía
  * %edboost_<economia>_name%      -> nombre mostrado (display-name) de esa economía
- * %edboost_total%                -> suma de todos los boosts permanentes del jugador
+ *
+ * %edboost_total% fue ELIMINADO: bajo la convención de multiplicador
+ * directo, sumar el boost de varias economías entre sí no tiene sentido
+ * (cada economía es un multiplicador independiente de una moneda
+ * distinta) — igual que en ArmorBoost.
  */
 public class EdBoostExpansion extends PlaceholderExpansion {
 
@@ -51,22 +56,27 @@ public class EdBoostExpansion extends PlaceholderExpansion {
             return "";
         }
 
-        if (params.equalsIgnoreCase("total")) {
-            return format(boostManager.getTotalBoostValue(player.getUniqueId()));
-        }
+        String lower = params.toLowerCase(Locale.ROOT);
 
-        if (params.toLowerCase(Locale.ROOT).endsWith("_max")) {
+        if (lower.endsWith("_max")) {
             String economy = params.substring(0, params.length() - "_max".length());
             return format(configManager.getMaxBoost(economy));
         }
 
-        if (params.toLowerCase(Locale.ROOT).endsWith("_name")) {
+        if (lower.endsWith("_name")) {
             String economy = params.substring(0, params.length() - "_name".length());
             return configManager.getDisplayName(economy);
         }
 
-        String economy = params.toLowerCase(Locale.ROOT);
-        double value = boostManager.getBoostValue(player.getUniqueId(), economy);
+        if (lower.endsWith("_percent")) {
+            String economy = params.substring(0, params.length() - "_percent".length());
+            double total = boostManager.getBoostValue(player.getUniqueId(), economy);
+            double percent = (total - 1.0D) * 100.0D;
+            String sign = percent > 0 ? "+" : "";
+            return sign + String.format(Locale.ROOT, "%.1f", percent);
+        }
+
+        double value = boostManager.getBoostValue(player.getUniqueId(), lower);
         return format(value);
     }
 
