@@ -16,12 +16,19 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * /edboost add <jugador> <economia> <cantidad>
- * /edboost remove <jugador> <economia> <cantidad>
+ * /edboost add <jugador> <economia> <cantidad> [confirm]
+ * /edboost remove <jugador> <economia> <cantidad> [confirm]
  * /edboost reset <jugador> <economia|all>
  * /edboost list <jugador>
+ *
+ * "cantidad" es un fragmento de MULTIPLICADOR a sumar al total actual del
+ * jugador (ej: 1.05 = x1.05 / +5%), no un porcentaje aditivo sobre 0.0.
+ * El "confirm" final solo es necesario cuando el resultado quedaría por
+ * debajo de x1.0 (reduciría el dinero del jugador en vez de aumentarlo).
  */
 public class EdBoostCommand implements CommandExecutor, TabCompleter {
+
+    private static final String CONFIRM_FLAG = "confirm";
 
     private final BoostManager boostManager;
     private final ConfigManager configManager;
@@ -81,7 +88,8 @@ public class EdBoostCommand implements CommandExecutor, TabCompleter {
         Double amount = parseDouble(sender, args[3]);
         if (amount == null) return true;
 
-        applyAdd(sender, target, economy, amount);
+        boolean confirmed = args.length >= 5 && args[4].equalsIgnoreCase(CONFIRM_FLAG);
+        applyAdd(sender, target, economy, amount, confirmed);
         return true;
     }
 
@@ -104,7 +112,8 @@ public class EdBoostCommand implements CommandExecutor, TabCompleter {
         Double amount = parseDouble(sender, args[3]);
         if (amount == null) return true;
 
-        applyRemove(sender, target, economy, amount);
+        boolean confirmed = args.length >= 5 && args[4].equalsIgnoreCase(CONFIRM_FLAG);
+        applyRemove(sender, target, economy, amount, confirmed);
         return true;
     }
 
@@ -154,55 +163,89 @@ public class EdBoostCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        // Nota: ya no se muestra un "total acumulado" sumando economías entre
+        // sí (como sí hacía la versión de porcentaje aditivo). Bajo la
+        // convención de multiplicador directo cada economía es independiente
+        // y sumarlas no tiene significado matemático.
         messages.send(sender, "list-header", Map.of("player", nameOf(target)));
-        double total = 0.0D;
         for (Map.Entry<String, Double> entry : boosts.entrySet()) {
             messages.send(sender, "list-entry", Map.of(
                     "economy", configManager.getDisplayName(entry.getKey()),
                     "amount", format(entry.getValue())
             ));
-            total += entry.getValue();
         }
-        messages.send(sender, "list-total", Map.of("total", format(total)));
         return true;
     }
 
-    private void applyAdd(CommandSender sender, OfflinePlayer target, String economy, double amount) {
-        BoostManager.AddResult result = boostManager.addBoost(target.getUniqueId(), economy, amount);
+    private void applyAdd(CommandSender sender, OfflinePlayer target, String economy, double amount, boolean confirmed) {
+        BoostManager.AddResult result = boostManager.addBoost(target.getUniqueId(), economy, amount, confirmed);
+
         if (!result.isAccepted()) {
-            messages.send(sender, "boost-max-exceeded", Map.of(
-                    "economy", configManager.getDisplayName(economy),
-                    "max", format(result.getMax()),
-                    "total", format(result.getTotal())
-            ));
+            if (result.getReason() == BoostManager.AddResult.Reason.BELOW_BASELINE_UNCONFIRMED) {
+                messages.send(sender, "boost-below-baseline-confirm", Map.of(
+                        "economy", configManager.getDisplayName(economy),
+                        "total", format(result.getTotal())
+                ));
+            } else {
+                messages.send(sender, "boost-max-exceeded", Map.of(
+                        "economy", configManager.getDisplayName(economy),
+                        "max", format(result.getMax()),
+                        "total", format(result.getTotal())
+                ));
+            }
             return;
         }
+
         messages.send(sender, "boost-added", Map.of(
                 "amount", format(amount),
                 "economy", configManager.getDisplayName(economy),
                 "player", nameOf(target),
                 "total", format(result.getTotal())
         ));
-    }
 
-    private void applyRemove(CommandSender sender, OfflinePlayer target, String economy, double amount) {
-        // Quitar nunca puede superar el máximo (va hacia abajo), pero se reutiliza
-        // addBoost con el monto negativo para mantener una sola fuente de verdad.
-        BoostManager.AddResult result = boostManager.addBoost(target.getUniqueId(), economy, -amount);
-        if (!result.isAccepted()) {
-            messages.send(sender, "boost-max-exceeded", Map.of(
+        if (result.isBelowBaseline()) {
+            messages.send(sender, "boost-below-baseline-warning", Map.of(
                     "economy", configManager.getDisplayName(economy),
-                    "max", format(result.getMax()),
                     "total", format(result.getTotal())
             ));
+        }
+    }
+
+    private void applyRemove(CommandSender sender, OfflinePlayer target, String economy, double amount, boolean confirmed) {
+        // Quitar reutiliza addBoost con el monto negativo para mantener una
+        // sola fuente de verdad — incluyendo el chequeo de máximo (no aplica
+        // al bajar) y el de "por debajo de x1.0" (sí puede aplicar al quitar).
+        BoostManager.AddResult result = boostManager.addBoost(target.getUniqueId(), economy, -amount, confirmed);
+
+        if (!result.isAccepted()) {
+            if (result.getReason() == BoostManager.AddResult.Reason.BELOW_BASELINE_UNCONFIRMED) {
+                messages.send(sender, "boost-below-baseline-confirm", Map.of(
+                        "economy", configManager.getDisplayName(economy),
+                        "total", format(result.getTotal())
+                ));
+            } else {
+                messages.send(sender, "boost-max-exceeded", Map.of(
+                        "economy", configManager.getDisplayName(economy),
+                        "max", format(result.getMax()),
+                        "total", format(result.getTotal())
+                ));
+            }
             return;
         }
+
         messages.send(sender, "boost-removed", Map.of(
                 "amount", format(amount),
                 "economy", configManager.getDisplayName(economy),
                 "player", nameOf(target),
                 "total", format(result.getTotal())
         ));
+
+        if (result.isBelowBaseline()) {
+            messages.send(sender, "boost-below-baseline-warning", Map.of(
+                    "economy", configManager.getDisplayName(economy),
+                    "total", format(result.getTotal())
+            ));
+        }
     }
 
     private void sendUsage(CommandSender sender) {
@@ -261,6 +304,8 @@ public class EdBoostCommand implements CommandExecutor, TabCompleter {
             if (args[0].equalsIgnoreCase("reset")) {
                 options.add("all");
             }
+        } else if (args.length == 5 && List.of("add", "remove").contains(args[0].toLowerCase(Locale.ROOT))) {
+            options.add(CONFIRM_FLAG);
         }
 
         List<String> filtered = new ArrayList<>();
