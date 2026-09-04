@@ -12,18 +12,23 @@ strict-economies: true
 # que se usa en /edboost add <jugador> <ID> <cantidad> y debe coincidir
 # exactamente con el nombre de la economía tal como lo reporta EdTools
 # en EdToolsCurrencyAddEvent#getCurrency().
+#
+# IMPORTANTE: los valores de boost son MULTIPLICADORES DIRECTOS, no
+# porcentajes. 1.0 = sin boost (base). 1.05 = x1.05 (+5%). Un total por
+# debajo de 1.0 REDUCE el valor de esa economía en vez de aumentarlo —
+# /edboost add exige confirmación explícita ('confirm') para permitir eso.
 economies:
   money:
     # Nombre mostrado en /edboost list y en mensajes.
     display-name: "Dinero"
-    # Multiplicador máximo acumulable para esta economía (0.01 = 1%).
+    # Multiplicador máximo acumulable para esta economía (2.0 = tope de x2.0 / +100%).
     # /edboost add rechazará cualquier suma que supere este tope.
-    max-boost: 1.0
+    max-boost: 2.0
 
   tokens:
     display-name: "Tokens"
-    max-boost: 0.5
+    max-boost: 1.5
 
   gems:
     display-name: "Gemas"
-    max-boost: 0.3
+    max-boost: 1.3

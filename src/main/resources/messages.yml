@@ -3,36 +3,46 @@
 # ══════════════════════════════════════════════
 # Placeholders disponibles según el mensaje: %player%, %economy%,
 # %amount%, %total%, %max%. Colores: '&' legacy y '&#rrggbb' hex.
+#
+# IMPORTANTE: %amount% y %total% ahora representan MULTIPLICADORES
+# directos (ej: 1.05 = x1.05 / +5%), no un porcentaje aditivo sobre 0.0.
 
-prefix: "&#7ff555[EdBoost]&r "
+prefix: "&#55ff55[EdBoost]&r "
 
 no-permission-use: "&#ff5555No tienes permiso para usar este comando."
 no-permission-admin: "&#ff5555No tienes permiso para hacer eso."
 
 usage-header: "&#ffaa00Uso:"
-usage-add: "&#aaaaaa/edboost add <jugador> <economia> <cantidad>"
-usage-remove: "&#aaaaaa/edboost remove <jugador> <economia> <cantidad>"
+usage-add: "&#aaaaaa/edboost add <jugador> <economia> <cantidad> [confirm]"
+usage-remove: "&#aaaaaa/edboost remove <jugador> <economia> <cantidad> [confirm]"
 usage-reset: "&#aaaaaa/edboost reset <jugador> <economia|all>"
 usage-list: "&#aaaaaa/edboost list [jugador]"
 
-usage-add-only: "&#ffaa00Uso: /edboost add <jugador> <economia> <cantidad>"
-usage-remove-only: "&#ffaa00Uso: /edboost remove <jugador> <economia> <cantidad>"
+usage-add-only: "&#ffaa00Uso: /edboost add <jugador> <economia> <cantidad> [confirm]"
+usage-remove-only: "&#ffaa00Uso: /edboost remove <jugador> <economia> <cantidad> [confirm]"
 usage-reset-only: "&#ffaa00Uso: /edboost reset <jugador> <economia|all>"
 usage-list-only: "&#ffaa00Uso: /edboost list <jugador>"
 
 player-not-found: "&#ff5555Ese jugador no existe o nunca entró al servidor."
-invalid-amount: "&#ff5555La cantidad debe ser un número válido, ej: 0.01"
+invalid-amount: "&#ff5555La cantidad debe ser un número válido, ej: 1.05"
 unknown-economy: "&#ff5555La economía '%economy%' no existe. Revisa config.yml."
 
 boost-max-exceeded: "&#ff5555Ese boost superaría el máximo permitido para %economy% (&#ffffff%max%x&#ff5555). Total actual: &#ffffff%total%x"
 
-boost-added: "&#7ff555Se añadió &#ffffff%amount%x&#7ff555 al boost de &#ffffff%economy%&#7ff555 de &#ffffff%player%&#7ff555. Nuevo total: &#ffffff%total%x"
-boost-removed: "&#7ff555Se quitó &#ffffff%amount%x&#7ff555 del boost de &#ffffff%economy%&#7ff555 de &#ffffff%player%&#7ff555. Nuevo total: &#ffffff%total%x"
+# Se muestra cuando el resultado quedaría por debajo de x1.0 (reduciría el
+# dinero del jugador) y el comando no incluyó el flag final 'confirm'.
+boost-below-baseline-confirm: "&#ff5555Ese cambio dejaría el boost de %economy% en &#ffffff%total%x&#ff5555, por debajo de x1.0 — esto REDUCIRÍA el %economy% del jugador. Repite el comando agregando 'confirm' al final si es intencional."
 
-reset-all: "&#7ff555Se reiniciaron &#fffffftodos&#7ff555 los boosts de &#ffffff%player%&#7ff555."
-reset-one: "&#7ff555Se reinició el boost de &#ffffff%economy%&#7ff555 de &#ffffff%player%&#7ff555."
+# Se muestra DESPUÉS de aplicar un boost que sí quedó por debajo de x1.0
+# (ya confirmado), como recordatorio de que el efecto es una reducción.
+boost-below-baseline-warning: "&#ffaa00Advertencia: el boost de %economy% quedó en &#ffffff%total%x&#ffaa00, por debajo de x1.0 — esto REDUCE el %economy% del jugador en vez de aumentarlo."
 
-list-header: "&#7ff555Boosts permanentes de &#ffffff%player%&#7ff555:"
+boost-added: "&#55ff55Se añadió &#ffffff%amount%x&#55ff55 al boost de &#ffffff%economy%&#55ff55 de &#ffffff%player%&#55ff55. Nuevo total: &#ffffff%total%x"
+boost-removed: "&#55ff55Se quitó &#ffffff%amount%x&#55ff55 del boost de &#ffffff%economy%&#55ff55 de &#ffffff%player%&#55ff55. Nuevo total: &#ffffff%total%x"
+
+reset-all: "&#55ff55Se reiniciaron &#fffffftodos&#55ff55 los boosts de &#ffffff%player%&#55ff55."
+reset-one: "&#55ff55Se reinició el boost de &#ffffff%economy%&#55ff55 de &#ffffff%player%&#55ff55."
+
+list-header: "&#55ff55Boosts permanentes de &#ffffff%player%&#55ff55:"
 list-entry: "&#aaaaaa - &#ffffff%economy%&#aaaaaa: &#ffffff%amount%x"
-list-total: "&#7ff555Total acumulado: &#ffffff%total%x"
 list-empty: "&#ffaa00%player% no tiene boosts permanentes activos."
