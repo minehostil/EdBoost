@@ -34,7 +34,7 @@ public class MessageManager {
             plugin.saveResource("messages.yml", false);
         }
         messages = YamlConfiguration.loadConfiguration(file);
-        prefix = messages.getString("prefix", "&#7ff555[EdBoost]&r ");
+        prefix = messages.getString("prefix", "&#55ff55[EdBoost]&r ");
     }
 
     /** Envía un mensaje ya formateado (con prefijo, color y placeholders resueltos). */
