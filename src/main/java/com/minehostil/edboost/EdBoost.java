@@ -33,7 +33,7 @@ public class EdBoost extends JavaPlugin {
         storage = new BoostStorage(this);
         storage.connect();
 
-        boostManager = new BoostManager(storage, configManager);
+        boostManager = new BoostManager(storage, configManager, getLogger());
 
         EdBoostCommand command = new EdBoostCommand(boostManager, configManager, messageManager);
         getCommand("edboost").setExecutor(command);
