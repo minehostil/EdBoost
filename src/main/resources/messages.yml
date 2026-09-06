@@ -7,7 +7,7 @@
 # IMPORTANTE: %amount% y %total% ahora representan MULTIPLICADORES
 # directos (ej: 1.05 = x1.05 / +5%), no un porcentaje aditivo sobre 0.0.
 
-prefix: "&#55ff55[EdBoost]&r "
+prefix: "7ff55[EdBoost]&r "
 
 no-permission-use: "&#ff5555No tienes permiso para usar este comando."
 no-permission-admin: "&#ff5555No tienes permiso para hacer eso."
@@ -37,12 +37,12 @@ boost-below-baseline-confirm: "&#ff5555Ese cambio dejaría el boost de %economy%
 # (ya confirmado), como recordatorio de que el efecto es una reducción.
 boost-below-baseline-warning: "&#ffaa00Advertencia: el boost de %economy% quedó en &#ffffff%total%x&#ffaa00, por debajo de x1.0 — esto REDUCE el %economy% del jugador en vez de aumentarlo."
 
-boost-added: "&#55ff55Se añadió &#ffffff%amount%x&#55ff55 al boost de &#ffffff%economy%&#55ff55 de &#ffffff%player%&#55ff55. Nuevo total: &#ffffff%total%x"
-boost-removed: "&#55ff55Se quitó &#ffffff%amount%x&#55ff55 del boost de &#ffffff%economy%&#55ff55 de &#ffffff%player%&#55ff55. Nuevo total: &#ffffff%total%x"
+boost-added: "7ff55Se añadió &#ffffff%amount%x7ff55 al boost de &#ffffff%economy%7ff55 de &#ffffff%player%7ff55. Nuevo total: &#ffffff%total%x"
+boost-removed: "7ff55Se quitó &#ffffff%amount%x7ff55 del boost de &#ffffff%economy%7ff55 de &#ffffff%player%7ff55. Nuevo total: &#ffffff%total%x"
 
-reset-all: "&#55ff55Se reiniciaron &#fffffftodos&#55ff55 los boosts de &#ffffff%player%&#55ff55."
-reset-one: "&#55ff55Se reinició el boost de &#ffffff%economy%&#55ff55 de &#ffffff%player%&#55ff55."
+reset-all: "7ff55Se reiniciaron &#fffffftodos7ff55 los boosts de &#ffffff%player%7ff55."
+reset-one: "7ff55Se reinició el boost de &#ffffff%economy%7ff55 de &#ffffff%player%7ff55."
 
-list-header: "&#55ff55Boosts permanentes de &#ffffff%player%&#55ff55:"
+list-header: "7ff55Boosts permanentes de &#ffffff%player%7ff55:"
 list-entry: "&#aaaaaa - &#ffffff%economy%&#aaaaaa: &#ffffff%amount%x"
 list-empty: "&#ffaa00%player% no tiene boosts permanentes activos."
