@@ -20,9 +20,9 @@ coincidir con el nombre que EdTools reporta en
 
 | Plugin              | Claves de economía disponibles                                    |
 |----------------------|---------------------------------------------------------------------|
-| RivalHarvesterHoes   | `hoes_essence`, `hoes_xp`                                          |
+| RivalHarvesterHoes   | `hoes_essence`, `hoes_money`, `hoes_xp`                            |
 | RivalPickaxes        | `pickaxes_essence`, `pickaxes_money`, `pickaxes_xp`, `pickaxes_procboost` |
-| RivalMobSwords       | `mobswords_essence`, `mobswords_xp`, `mobswords_procboost`          |
+| RivalMobSwords       | `mobswords_essence`, `mobswords_money`, `mobswords_xp`, `mobswords_procboost` |
 | CyberLevels          | `cyberlevels_exp`                                                   |
 
 Ej: `%edboost_hoes_essence%`, `%edboost_pickaxes_procboost_percent%`.

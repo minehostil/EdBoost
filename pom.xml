@@ -116,6 +116,39 @@
                                     <shadedPattern>com.minehostil.edboost.libs.sqlite</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <!--
+                                sqlite-jdbc empaqueta binarios nativos para
+                                prácticamente todos los SO/arquitecturas
+                                (Windows, macOS, Linux glibc/musl, FreeBSD,
+                                Android, en x86/x86_64/arm/aarch64/ppc64/etc.),
+                                lo que infla el JAR final a ~14 MB. MineHostil
+                                corre todo en Linux x86_64 vía Pterodactyl
+                                (contenedores Debian o Alpine), así que se
+                                descartan el resto — si algún nodo usara otra
+                                arquitectura (ej. ARM), habría que agregar de
+                                vuelta su carpeta nativa correspondiente aquí.
+                            -->
+                            <filters>
+                                <filter>
+                                    <artifact>org.xerial:sqlite-jdbc</artifact>
+                                    <excludes>
+                                        <exclude>org/sqlite/native/FreeBSD/**</exclude>
+                                        <exclude>org/sqlite/native/Linux/aarch64/**</exclude>
+                                        <exclude>org/sqlite/native/Linux/android-arm/**</exclude>
+                                        <exclude>org/sqlite/native/Linux/arm/**</exclude>
+                                        <exclude>org/sqlite/native/Linux/armv6/**</exclude>
+                                        <exclude>org/sqlite/native/Linux/armv7/**</exclude>
+                                        <exclude>org/sqlite/native/Linux/ppc64/**</exclude>
+                                        <exclude>org/sqlite/native/Linux/riscv64/**</exclude>
+                                        <exclude>org/sqlite/native/Linux/x86/**</exclude>
+                                        <exclude>org/sqlite/native/Linux-Musl/aarch64/**</exclude>
+                                        <exclude>org/sqlite/native/Linux-Musl/arm/**</exclude>
+                                        <exclude>org/sqlite/native/Linux-Android/**</exclude>
+                                        <exclude>org/sqlite/native/Mac/**</exclude>
+                                        <exclude>org/sqlite/native/Windows/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
