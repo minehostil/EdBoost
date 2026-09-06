@@ -3,7 +3,12 @@ package com.minehostil.edboost.config;
 import com.minehostil.edboost.EdBoost;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -28,6 +33,12 @@ public class ConfigManager {
         plugin.reloadConfig();
         FileConfiguration config = plugin.getConfig();
 
+        if (mergeMissingDefaultEconomies(config)) {
+            plugin.saveConfig();
+            plugin.reloadConfig();
+            config = plugin.getConfig();
+        }
+
         strictEconomies = config.getBoolean("strict-economies", true);
 
         economies.clear();
@@ -43,6 +54,48 @@ public class ConfigManager {
 
         if (economies.isEmpty()) {
             plugin.getLogger().warning("No hay economías registradas en config.yml (sección 'economies').");
+        }
+    }
+
+    /**
+     * saveDefaultConfig() solo escribe el config.yml empaquetado si el
+     * archivo TODAVÍA NO EXISTE en el servidor — si ya existe (por
+     * ejemplo, tras actualizar el plugin y agregar nuevas economías como
+     * hoes_essence, pickaxes_money, etc.), Bukkit nunca fusiona las claves
+     * nuevas automáticamente. Sin esto, cualquier economía añadida en una
+     * versión posterior del plugin queda invisible en un servidor que ya
+     * tenía EdBoost instalado, y /edboost add la rechaza como "economía
+     * inexistente" aunque el listener correspondiente sí esté activo.
+     *
+     * Este método compara las economías del config.yml empaquetado dentro
+     * del JAR contra las del config.yml real en disco, y agrega las que
+     * falten (sin tocar ni sobrescribir las que el admin ya haya
+     * personalizado). Devuelve true si se agregó algo nuevo.
+     */
+    private boolean mergeMissingDefaultEconomies(FileConfiguration liveConfig) {
+        try (InputStream stream = plugin.getResource("config.yml")) {
+            if (stream == null) return false;
+
+            YamlConfiguration packagedDefaults = YamlConfiguration.loadConfiguration(
+                    new InputStreamReader(stream, StandardCharsets.UTF_8));
+
+            ConfigurationSection defaultEconomies = packagedDefaults.getConfigurationSection("economies");
+            if (defaultEconomies == null) return false;
+
+            boolean changed = false;
+            for (String key : defaultEconomies.getKeys(false)) {
+                String path = "economies." + key;
+                if (liveConfig.contains(path)) continue;
+
+                liveConfig.set(path + ".display-name", packagedDefaults.getString(path + ".display-name"));
+                liveConfig.set(path + ".max-boost", packagedDefaults.getDouble(path + ".max-boost"));
+                changed = true;
+                plugin.getLogger().info("Economía '" + key + "' añadida automáticamente a config.yml (nueva en esta versión).");
+            }
+            return changed;
+        } catch (IOException exception) {
+            plugin.getLogger().warning("No se pudo revisar economías nuevas para fusionar en config.yml: " + exception.getMessage());
+            return false;
         }
     }
 
