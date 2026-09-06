@@ -4,11 +4,11 @@ main: com.minehostil.edboost.EdBoost
 api-version: '1.21'
 author: MineHostil
 depend: [EdTools]
-softdepend: [PlaceholderAPI]
+softdepend: [PlaceholderAPI, RivalHarvesterHoes, RivalPickaxes, RivalMobSwords, CyberLevels]
 
 commands:
   edboost:
-    description: Gestiona boosts permanentes de EdTools por jugador
+    description: Gestiona boosts permanentes de EdTools y de otros plugins soportados por jugador
     usage: /<command> <add|remove|reset|list> ...
     permission: edboost.use
     permission-message: "&#ff5555No tienes permiso para usar este comando."

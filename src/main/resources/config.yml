@@ -9,20 +9,23 @@
 strict-economies: true
 
 # Economías disponibles para boostear. La clave (ej. 'money') es el ID
-# que se usa en /edboost add <jugador> <ID> <cantidad> y debe coincidir
-# exactamente con el nombre de la economía tal como lo reporta EdTools
-# en EdToolsCurrencyAddEvent#getCurrency().
+# que se usa en /edboost add <jugador> <ID> <cantidad>.
+#
+# Para 'money', 'tokens', 'gems' (o cualquier otra que agregues de
+# EdTools) la clave debe coincidir exactamente con el nombre que EdTools
+# reporta en EdToolsCurrencyAddEvent#getCurrency(). Para las economías de
+# los plugins Rival/CyberLevels (ver más abajo) la clave es fija, no
+# configurable — la usa directamente el listener correspondiente.
 #
 # IMPORTANTE: los valores de boost son MULTIPLICADORES DIRECTOS, no
 # porcentajes. 1.0 = sin boost (base). 1.05 = x1.05 (+5%). Un total por
 # debajo de 1.0 REDUCE el valor de esa economía en vez de aumentarlo —
 # /edboost add exige confirmación explícita ('confirm') para permitir eso.
 economies:
+
+  # ── EdTools (obligatorio, depend en plugin.yml) ──────────────────────
   money:
-    # Nombre mostrado en /edboost list y en mensajes.
     display-name: "Dinero"
-    # Multiplicador máximo acumulable para esta economía (2.0 = tope de x2.0 / +100%).
-    # /edboost add rechazará cualquier suma que supere este tope.
     max-boost: 2.0
 
   tokens:
@@ -32,3 +35,47 @@ economies:
   gems:
     display-name: "Gemas"
     max-boost: 1.3
+
+  # ── RivalHarvesterHoes (opcional, solo si el plugin está instalado) ──
+  hoes_essence:
+    display-name: "Essence (Azadas)"
+    max-boost: 2.0
+
+  hoes_xp:
+    display-name: "XP (Azadas)"
+    max-boost: 2.0
+
+  # ── RivalPickaxes (opcional) ──────────────────────────────────────────
+  pickaxes_essence:
+    display-name: "Essence (Picos)"
+    max-boost: 2.0
+
+  pickaxes_money:
+    display-name: "Dinero (Picos)"
+    max-boost: 2.0
+
+  pickaxes_xp:
+    display-name: "XP (Picos)"
+    max-boost: 2.0
+
+  pickaxes_procboost:
+    display-name: "Proc Boost (Picos)"
+    max-boost: 1.5
+
+  # ── RivalMobSwords (opcional) ─────────────────────────────────────────
+  mobswords_essence:
+    display-name: "Essence (Espadas)"
+    max-boost: 2.0
+
+  mobswords_xp:
+    display-name: "XP (Espadas)"
+    max-boost: 2.0
+
+  mobswords_procboost:
+    display-name: "Proc Boost (Espadas)"
+    max-boost: 1.5
+
+  # ── CyberLevels (opcional) ────────────────────────────────────────────
+  cyberlevels_exp:
+    display-name: "EXP (CyberLevels)"
+    max-boost: 2.0
