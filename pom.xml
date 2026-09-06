@@ -52,6 +52,42 @@
             <systemPath>${project.basedir}/libs/EdToolsAPI.jar</systemPath>
         </dependency>
 
+        <!-- RivalHarvesterHoes (JAR local, ver libs/README.md) -->
+        <dependency>
+            <groupId>me.rivaldev</groupId>
+            <artifactId>harvesterhoes</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/RivalHarvesterHoes.jar</systemPath>
+        </dependency>
+
+        <!-- RivalPickaxes (JAR local, ver libs/README.md) -->
+        <dependency>
+            <groupId>me.rivaldev</groupId>
+            <artifactId>pickaxes</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/RivalPickaxes.jar</systemPath>
+        </dependency>
+
+        <!-- RivalMobSwords (JAR local, ver libs/README.md) -->
+        <dependency>
+            <groupId>me.rivaldev</groupId>
+            <artifactId>mobswords</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/RivalMobSwords.jar</systemPath>
+        </dependency>
+
+        <!-- CyberLevels (JAR local, ver libs/README.md) -->
+        <dependency>
+            <groupId>com.bitaspire</groupId>
+            <artifactId>cyberlevels</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/CyberLevels.jar</systemPath>
+        </dependency>
+
         <!-- SQLite (shaded) para persistencia de boosts permanentes -->
         <dependency>
             <groupId>org.xerial</groupId>
