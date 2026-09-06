@@ -2,6 +2,7 @@ package com.minehostil.edboost.listener;
 
 import com.minehostil.edboost.manager.BoostManager;
 import me.rivaldev.harvesterhoes.api.events.HoeEssenceReceiveEnchantEvent;
+import me.rivaldev.harvesterhoes.api.events.HoeMoneyReceiveEnchant;
 import me.rivaldev.harvesterhoes.api.events.HoeXPGainEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,21 +10,20 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
- * Aplica el boost permanente del jugador a los eventos de RivalHarvesterHoes,
- * usando las mismas dos economías que ya cubría el hook de FusionPlugin para
- * este plugin: essence y XP de la azada.
+ * Aplica el boost permanente del jugador a los eventos de RivalHarvesterHoes:
+ * essence, dinero y XP de la azada.
  *
- * Verificado contra el JAR real (paquete me.rivaldev.harvesterhoes.api.events):
- * ambos eventos exponen getMultiplier()/setMultiplier(double), y se combinan
- * de forma MULTIPLICATIVA (multiplier * boost) — no aditiva como EdTools —
- * así que aquí NO se resta 1.0 antes de aplicar, se usa el total tal cual.
+ * CONVENCIÓN DE CÁLCULO: valor final = valor base * multiplicador total.
+ * Ej: essence base 7, boost x2 -> 14. Por eso se multiplica directamente
+ * el campo de VALOR de cada evento (getEssence/getMoney/getXP), no un
+ * campo intermedio "boost"/"multiplier" — estos eventos exponen ambos,
+ * pero usar el valor directo hace que el resultado final sea exactamente
+ * base*total sin depender de cómo el plugin combine internamente ese
+ * campo intermedio con la cantidad base.
  *
- * Economías usadas en config.yml: hoes_essence, hoes_xp.
+ * Verificado contra el JAR real (paquete me.rivaldev.harvesterhoes.api.events).
  *
- * Nota: HoeMoneyReceiveEnchant también existe en la API y tiene su propio
- * getBoost()/setBoost(double), pero el hook original de FusionPlugin no lo
- * usa (solo essence y XP) — se deja fuera aquí por consistencia; añadirlo
- * es trivial si se necesita más adelante (economía "hoes_money").
+ * Economías en config.yml: hoes_essence, hoes_money, hoes_xp.
  */
 public class RivalHarvesterHoesListener implements Listener {
 
@@ -41,7 +41,18 @@ public class RivalHarvesterHoesListener implements Listener {
         double boost = boostManager.getBoostValue(player.getUniqueId(), "hoes_essence");
         if (boost == 1.0D) return;
 
-        event.setMultiplier(event.getMultiplier() * boost);
+        event.setEssence(event.getEssence() * boost);
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onMoneyGain(HoeMoneyReceiveEnchant event) {
+        Player player = event.getPlayer();
+        if (player == null) return;
+
+        double boost = boostManager.getBoostValue(player.getUniqueId(), "hoes_money");
+        if (boost == 1.0D) return;
+
+        event.setMoney(event.getMoney() * boost);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -52,6 +63,6 @@ public class RivalHarvesterHoesListener implements Listener {
         double boost = boostManager.getBoostValue(player.getUniqueId(), "hoes_xp");
         if (boost == 1.0D) return;
 
-        event.setMultiplier(event.getMultiplier() * boost);
+        event.setXP(event.getXP() * boost);
     }
 }

@@ -10,16 +10,15 @@ import org.bukkit.event.Listener;
  * Aplica el boost permanente del jugador en el momento en que EdTools
  * va a otorgarle una economía, usando EdToolsCurrencyAddEvent.
  *
- * BoostManager.getBoostValue() devuelve un MULTIPLICADOR ABSOLUTO
- * (ej: 1.10 = x1.10), pero event.addMultiplier() de EdTools espera el
- * "extra" a sumar sobre la base, no el multiplicador absoluto — por eso
- * se le resta 1.0 antes de pasarlo. Misma lógica que EdToolsListener en
- * ArmorBoost.
+ * CONVENCIÓN DE CÁLCULO: valor final = valor base * multiplicador total.
+ * Ej: cantidad base 7, boost x2 -> 14. Se multiplica getAmount()
+ * directamente, igual que el hook original de FusionPlugin (EdToolsHook).
  *
- * Se usa addMultiplier() en vez de tocar getAmount()/setAmount() directo,
- * para no pisar el cálculo de EdTools ni el de otros plugins que también
- * escuchen este evento (boosters nativos, otros hooks, etc.) — cada uno
- * suma su propio multiplicador sobre el mismo evento.
+ * Antes esta clase usaba event.addMultiplier(total - 1.0), asumiendo que
+ * esa API combinaba el "extra" aditivamente sobre una base. Se simplificó
+ * a la multiplicación directa del amount para que el resultado sea
+ * exactamente base*total sin depender de cómo EdTools combine
+ * internamente su propio campo "multiplier".
  */
 public class EdToolsListener implements Listener {
 
@@ -31,12 +30,9 @@ public class EdToolsListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onCurrencyAdd(EdToolsCurrencyAddEvent event) {
-        double total = boostManager.getBoostValue(event.getUuid(), event.getCurrency());
-        if (total <= 0.0D) return;
+        double boost = boostManager.getBoostValue(event.getUuid(), event.getCurrency());
+        if (boost == 1.0D) return;
 
-        double extra = total - 1.0D;
-        if (extra == 0.0D) return;
-
-        event.addMultiplier(extra);
+        event.setAmount(event.getAmount() * boost);
     }
 }

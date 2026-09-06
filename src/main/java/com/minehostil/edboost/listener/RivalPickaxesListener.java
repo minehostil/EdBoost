@@ -11,17 +11,21 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
- * Aplica el boost permanente del jugador a los eventos de RivalPickaxes,
- * las mismas cuatro economías que ya cubría el hook de FusionPlugin:
- * essence, money, XP y procboost del pico.
+ * Aplica el boost permanente del jugador a los eventos de RivalPickaxes:
+ * essence, dinero, XP y procboost del pico.
+ *
+ * CONVENCIÓN DE CÁLCULO: valor final = valor base * multiplicador total.
+ * Ej: essence base 7, boost x2 -> 14. Se multiplica el campo de VALOR
+ * directamente (getEssence/getMoney/getXP), no el campo intermedio
+ * "boost" que estos eventos también exponen — igual razón que en
+ * RivalHarvesterHoesListener.
+ *
+ * PickaxeEnchantProcBoostEvent es la única excepción: no tiene un campo
+ * de "valor" separado, el campo "boost" ES el valor a boostear, así que
+ * ahí sí se multiplica getBoost()/setBoost() directamente (misma fórmula,
+ * aplicada al único campo disponible).
  *
  * Verificado contra el JAR real (paquete me.rivaldev.pickaxes.api.events).
- * Combinación MULTIPLICATIVA en todos los casos (igual que FusionPlugin):
- * - PickaxeEssenceReceiveEnchantEvent / PickaxeMoneyReceiveEnchant /
- *   PickaxeEnchantProcBoostEvent exponen su propio getBoost()/setBoost(double)
- *   (NO tienen getMultiplier(), a diferencia de RivalHarvesterHoes).
- * - PickaxeXPGainEvent NO tiene campo "boost" separado — solo getXP()/setXP(),
- *   así que ahí se multiplica el XP directamente.
  *
  * Economías en config.yml: pickaxes_essence, pickaxes_money, pickaxes_xp,
  * pickaxes_procboost.
@@ -42,7 +46,7 @@ public class RivalPickaxesListener implements Listener {
         double boost = boostManager.getBoostValue(player.getUniqueId(), "pickaxes_essence");
         if (boost == 1.0D) return;
 
-        event.setBoost(event.getBoost() * boost);
+        event.setEssence(event.getEssence() * boost);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -53,7 +57,7 @@ public class RivalPickaxesListener implements Listener {
         double boost = boostManager.getBoostValue(player.getUniqueId(), "pickaxes_money");
         if (boost == 1.0D) return;
 
-        event.setBoost(event.getBoost() * boost);
+        event.setMoney(event.getMoney() * boost);
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
