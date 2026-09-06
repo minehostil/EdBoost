@@ -18,9 +18,11 @@ strict-economies: true
 # configurable — la usa directamente el listener correspondiente.
 #
 # IMPORTANTE: los valores de boost son MULTIPLICADORES DIRECTOS, no
-# porcentajes. 1.0 = sin boost (base). 1.05 = x1.05 (+5%). Un total por
-# debajo de 1.0 REDUCE el valor de esa economía en vez de aumentarlo —
-# /edboost add exige confirmación explícita ('confirm') para permitir eso.
+# porcentajes. 1.0 = sin boost (base). 1.05 = x1.05 (+5%). El cálculo
+# final siempre es: valor_base * multiplicador_total (ej: essence base 7
+# con boost x2 = 14). Un total por debajo de 1.0 REDUCE el valor de esa
+# economía en vez de aumentarlo — /edboost add exige confirmación
+# explícita ('confirm') para permitir eso.
 economies:
 
   # ── EdTools (obligatorio, depend en plugin.yml) ──────────────────────
@@ -39,6 +41,10 @@ economies:
   # ── RivalHarvesterHoes (opcional, solo si el plugin está instalado) ──
   hoes_essence:
     display-name: "Essence (Azadas)"
+    max-boost: 2.0
+
+  hoes_money:
+    display-name: "Dinero (Azadas)"
     max-boost: 2.0
 
   hoes_xp:
@@ -65,6 +71,10 @@ economies:
   # ── RivalMobSwords (opcional) ─────────────────────────────────────────
   mobswords_essence:
     display-name: "Essence (Espadas)"
+    max-boost: 2.0
+
+  mobswords_money:
+    display-name: "Dinero (Espadas)"
     max-boost: 2.0
 
   mobswords_xp:
