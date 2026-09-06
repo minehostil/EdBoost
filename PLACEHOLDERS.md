@@ -13,8 +13,19 @@ DIRECTOS, no porcentajes. `1.0` = sin boost. `1.10` = x1.10 (+10%).
 | `%edboost_<economia>_name%`      | Nombre mostrado (`display-name`) configurado para esa economía.              |
 
 `<economia>` debe coincidir con la clave usada en `config.yml` bajo
-`economies:` (ej. `money`, `tokens`, `gems`), y con el nombre que EdTools
-reporta en `EdToolsCurrencyAddEvent#getCurrency()`.
+`economies:`. Para `money`, `tokens`, `gems` (EdTools) la clave debe
+coincidir con el nombre que EdTools reporta en
+`EdToolsCurrencyAddEvent#getCurrency()`. Para los plugins opcionales
+(cada uno solo aplica si ese plugin está instalado) las claves son fijas:
+
+| Plugin              | Claves de economía disponibles                                    |
+|----------------------|---------------------------------------------------------------------|
+| RivalHarvesterHoes   | `hoes_essence`, `hoes_xp`                                          |
+| RivalPickaxes        | `pickaxes_essence`, `pickaxes_money`, `pickaxes_xp`, `pickaxes_procboost` |
+| RivalMobSwords       | `mobswords_essence`, `mobswords_xp`, `mobswords_procboost`          |
+| CyberLevels          | `cyberlevels_exp`                                                   |
+
+Ej: `%edboost_hoes_essence%`, `%edboost_pickaxes_procboost_percent%`.
 
 ## `%edboost_total%` — eliminado
 
