@@ -158,7 +158,3 @@ public class EdBoost extends JavaPlugin {
         return messageManager;
     }
 }
-
-Importante: esto elimina la obligación desde "EdBoost.java", pero si "EdToolsListener" tiene referencias directas a clases de EdTools como "EdToolsCurrencyAddEvent", todavía hay que proteger esas referencias para que el ".jar" pueda arrancar sin EdTools.
-
-Si me pasas "EdToolsListener.java", puedo adaptarlo también para que EdTools sea realmente opcional sin ningún "NoClassDefFoundError".
