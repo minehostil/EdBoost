@@ -22,12 +22,6 @@ public class EdBoost extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (getServer().getPluginManager().getPlugin("EdTools") == null) {
-            getLogger().severe("EdTools no está instalado. Desactivando EdBoost.");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
         configManager = new ConfigManager(this);
         configManager.load();
 
@@ -39,57 +33,109 @@ public class EdBoost extends JavaPlugin {
 
         boostManager = new BoostManager(storage, configManager, getLogger());
 
-        EdBoostCommand command = new EdBoostCommand(boostManager, configManager, messageManager);
+        EdBoostCommand command = new EdBoostCommand(
+                boostManager,
+                configManager,
+                messageManager
+        );
+
         getCommand("edboost").setExecutor(command);
         getCommand("edboost").setTabCompleter(command);
 
-        getServer().getPluginManager().registerEvents(new EdToolsListener(boostManager), this);
+        /*
+         * EdTools es una dependencia opcional.
+         * El listener solo se registra si EdTools está instalado.
+         */
+        if (getServer().getPluginManager().getPlugin("EdTools") != null) {
+            getServer().getPluginManager().registerEvents(
+                    new EdToolsListener(boostManager),
+                    this
+            );
+
+            getLogger().info("Hook de EdTools conectado.");
+        } else {
+            getLogger().info(
+                    "EdTools no está instalado, se omite el hook de EdTools."
+            );
+        }
+
         registerOptionalHooks();
 
+        /*
+         * PlaceholderAPI también es opcional.
+         */
         if (getServer().getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new EdBoostExpansion(boostManager, configManager).register();
             getLogger().info("Expansión de PlaceholderAPI registrada.");
         } else {
-            getLogger().warning("PlaceholderAPI no está instalado. Los placeholders %edboost_*% no funcionarán.");
+            getLogger().warning(
+                    "PlaceholderAPI no está instalado. " +
+                    "Los placeholders %edboost_*% no funcionarán."
+            );
         }
 
         getLogger().info("EdBoost habilitado correctamente.");
     }
 
     /**
-     * Registra los listeners de los plugins opcionales (soft-dependency):
+     * Registra los listeners de los plugins opcionales:
      * RivalHarvesterHoes, RivalPickaxes, RivalMobSwords y CyberLevels.
-     * Cada uno solo se activa si el plugin correspondiente está presente
-     * en el servidor; si no, simplemente no se registra el listener y se
-     * deja un log informativo (mismo patrón que los hooks de FusionPlugin).
+     *
+     * Cada listener solo se registra si el plugin correspondiente
+     * está instalado en el servidor.
      */
     private void registerOptionalHooks() {
+
         if (getServer().getPluginManager().getPlugin("RivalHarvesterHoes") != null) {
-            getServer().getPluginManager().registerEvents(new RivalHarvesterHoesListener(boostManager), this);
+            getServer().getPluginManager().registerEvents(
+                    new RivalHarvesterHoesListener(boostManager),
+                    this
+            );
+
             getLogger().info("Hook de RivalHarvesterHoes conectado.");
         } else {
-            getLogger().info("RivalHarvesterHoes no está instalado, se omite ese hook.");
+            getLogger().info(
+                    "RivalHarvesterHoes no está instalado, se omite ese hook."
+            );
         }
 
         if (getServer().getPluginManager().getPlugin("RivalPickaxes") != null) {
-            getServer().getPluginManager().registerEvents(new RivalPickaxesListener(boostManager), this);
+            getServer().getPluginManager().registerEvents(
+                    new RivalPickaxesListener(boostManager),
+                    this
+            );
+
             getLogger().info("Hook de RivalPickaxes conectado.");
         } else {
-            getLogger().info("RivalPickaxes no está instalado, se omite ese hook.");
+            getLogger().info(
+                    "RivalPickaxes no está instalado, se omite ese hook."
+            );
         }
 
         if (getServer().getPluginManager().getPlugin("RivalMobSwords") != null) {
-            getServer().getPluginManager().registerEvents(new RivalMobSwordsListener(boostManager), this);
+            getServer().getPluginManager().registerEvents(
+                    new RivalMobSwordsListener(boostManager),
+                    this
+            );
+
             getLogger().info("Hook de RivalMobSwords conectado.");
         } else {
-            getLogger().info("RivalMobSwords no está instalado, se omite ese hook.");
+            getLogger().info(
+                    "RivalMobSwords no está instalado, se omite ese hook."
+            );
         }
 
         if (getServer().getPluginManager().getPlugin("CyberLevels") != null) {
-            getServer().getPluginManager().registerEvents(new CyberLevelsListener(boostManager), this);
+            getServer().getPluginManager().registerEvents(
+                    new CyberLevelsListener(boostManager),
+                    this
+            );
+
             getLogger().info("Hook de CyberLevels conectado.");
         } else {
-            getLogger().info("CyberLevels no está instalado, se omite ese hook.");
+            getLogger().info(
+                    "CyberLevels no está instalado, se omite ese hook."
+            );
         }
     }
 
@@ -112,3 +158,7 @@ public class EdBoost extends JavaPlugin {
         return messageManager;
     }
 }
+
+Importante: esto elimina la obligación desde "EdBoost.java", pero si "EdToolsListener" tiene referencias directas a clases de EdTools como "EdToolsCurrencyAddEvent", todavía hay que proteger esas referencias para que el ".jar" pueda arrancar sin EdTools.
+
+Si me pasas "EdToolsListener.java", puedo adaptarlo también para que EdTools sea realmente opcional sin ningún "NoClassDefFoundError".
