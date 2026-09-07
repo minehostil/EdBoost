@@ -3,8 +3,7 @@ version: '1.0.0'
 main: com.minehostil.edboost.EdBoost
 api-version: '1.21'
 author: MineHostil
-depend: [EdTools]
-softdepend: [PlaceholderAPI, RivalHarvesterHoes, RivalPickaxes, RivalMobSwords, CyberLevels]
+softdepend: [EdTools, PlaceholderAPI, RivalHarvesterHoes, RivalPickaxes, RivalMobSwords, CyberLevels]
 
 commands:
   edboost:
